@@ -1,58 +1,23 @@
-/**
- * 模块描述
- * 时钟上升沿锁存数据
- * 个人觉得不需要清零，没有设置清零端
- * 输入:		时钟脉冲
- *			8位wire类型的in_data(数据)
- *			1位wire类型的cin(初始进位)
- *			1位wire类型的lock_in_data	 (输入数据锁存控制信号)
- *			1位wire类型的lock_out_data(输出数据锁存控制信号)
- * 输出:		8位wire类型的out_data(数据)
- *			1位wire类型的cout(溢出判断)
- */
-module ALU_ADD (clk/*时钟*/, in_data/*8位输入数据*/, cin, out_data,cout, lock_in_data,lock_out_data)
+module ALU_ADD (clk/*时钟*/, in_a/*连接累加器*/, in_b/*连接BUS*/, cin/*进位标志位*/, out_sum/*连接到总线*/, cout/*连接状态寄存器*/)
 // 输入输出定义
-input clk, in_data, cin, lock_in_data, lock_out_data;
-output out_data, cout;
-// 线网和寄存器声明
-wire [7:0] in_data;
-wire [7:0] out_data;
-wire cin, cout, lock_in_data, lock_out_data;
+input clk, in_a, in_b, cin;
+output out_sum , cout;
+wire [7:0] in_a;
+wire [7:0] in_b;
+wire cin, t;
+wire [7:0] out_sum;
+wire cout;
 
-wire[7:0] sum;//连接并行加法模块
-wire[7:0] co  //连接并行加法模块
-reg [7:0] reg_A;   		//A数据
-reg [7:0] reg_out_data; //结果数据
-reg reg_cout;
-
-//数据流描述
-assign out_data = reg_out_data;
-assign cout = reg_cout;
-
-//模块连接
 adder8 ADDER(//实例化8位加法器
-.a 		(reg_A),
-.b      (in_data),
+.a 		(in_a),
+.b      (in_b),
 .cin    (cin),
-.sum    (sum),//output
-.co     (co)  //output
+.sum    (out_sum),//output
+.co     (cout)  //output
 );
-
-//行为描述
-always @(posedge clk) begin    // TODO 此出的begin  end  是否可以换成fork  join  换成并行的结构？？？？
-	if (lock_in_data) begin
-		reg_A <= in_data;
-	end
-	if (lock_out_data) begin
-		reg_out_data <= sum;   //结果缓存
-		reg_cout <= co;  //溢出位缓存
-	end
-end
 endmodule
 
-
-
-
+//加法器
 module adder8 (
 //input:
 a,
