@@ -1,13 +1,13 @@
-module ALU_ADD (clk/*时钟*/, in_a/*连接累加器*/, in_b/*连接BUS*/, cin/*进位标志位*/, out_sum/*连接到总线*/, cout/*连接状态寄存器*/)
+module ALU_ADD (in_a/*连接累加器*/, in_b/*连接BUS*/, cin/*进位标志位*/, out_sum/*连接到总线*/, cout/*连接状态寄存器*/)
 // 输入输出定义
-input clk, in_a, in_b, cin;
+input in_a, in_b, cin;
 output out_sum , cout;
 wire [7:0] in_a;
 wire [7:0] in_b;
 wire cin, t;
 wire [7:0] out_sum;
 wire cout;
-
+//我其实只是想记录一下怎么实例化模块   你相信吗？
 adder8 ADDER(//实例化8位加法器
 .a 		(in_a),
 .b      (in_b),
