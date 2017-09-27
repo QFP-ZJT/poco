@@ -160,7 +160,8 @@ module test_1(
 endmodule
 
 // 微程序设计指令的地址生成器
-module w_uPC(clk,rst,ld,op,in_upc,in_pc,out);
+module w_uPC(input clk,input rst,input ld,input [1:0] op,
+			input [7:0] in_upc,input [3:0] in_pc,output wire [7:0] out);
 		/**
 		*	rst = 0 清零
 		*	rst = 1, ld = 0; 直传 out = in
@@ -169,15 +170,7 @@ module w_uPC(clk,rst,ld,op,in_upc,in_pc,out);
 		*	rst = 1, ld = 1,op[1:0] == 00; 计数
 		*	可能的更改:reg直接输出
 		*/
-		input clk, rst, ld;    
-		input [1:0] op;
-		input [7:0] in_upc;
-		input [3:0] in_pc;
-		output wire [7:0] out;
-		// wire clk, rst, ld;/*rst 将upc重置为1  指向取值周期*/
-		// wire [7:0] in_upc, out;/*重置upc的值*/
-		// wire [3:0] in_pc;
-		// wire [1:0] op;
+		
 		reg [7:0] value;
 		always @(posedge clk) begin
 			if (!rst)
@@ -197,18 +190,15 @@ endmodule
 /**
  *	普通寄存器设计模型
  */
-module register(clk,in,out,out_allow,in_allow,rst);
+module register(
+	input clk, input [7:0] in, output wire [7:0] out,
+	input out_allow,input in_allow,input rst);
 
 		/** 
 		*	rst = 0   清零
 		*	in_allow  锁存数据
 		*	out_allow 输出数据
 		*/
-		input clk, out_allow, in_allow,rst;
-		input [7:0] in;
-		output wire [7:0] out;
-		// wire clk,in_allow,out_allow;
-		// wire [7:0] in,out;
 		reg  [7:0] mem;
 		always @(posedge clk) begin
 			if (!rst)
@@ -226,7 +216,9 @@ endmodule
  * clk,op 选择要执行的操作,
  * in_a连接累加器, in_b连接BUS,cin进位标志位, out连接到总线,cout连接状态寄存器
  */
-module w_alu (clk,op/*选择要执行的操作*/,in_a/*连接累加器*/, in_b/*连接BUS*/,cin/*进位标志位*/, out/*连接到总线*/,cout/*连接状态寄存器*/);
+module w_alu (
+	input clk, input [2:0] op/*选择要执行的操作*/,input [7:0] in_a/*连接累加器*/, input [7:0] in_b/*连接BUS*/,
+	input cin/*进位标志位*/,output reg [7:0] out/*连接到总线*/,output reg cout/*连接状态寄存器*/);
 		/**
 		*	op 000 加法
 		*	op 001 减法
@@ -237,17 +229,7 @@ module w_alu (clk,op/*选择要执行的操作*/,in_a/*连接累加器*/, in_b/*
 		*	op 110 备用
 		*	op 111 不输出
 		*/
-		input clk,cin;
-		input [2:0] op;
-		input [7:0] in_a , in_b;
-		output reg [7:0] out;
-		output reg cout;
-		// wire [7:0] in_a;
-		// wire [7:0] in_b;
-		// wire cin, t,clk;
-		// wire [7:0] out;
-		// wire cout;
-		// wire [2:0] op;
+
 		always @(*) begin
 			case(op)
 				3'b000:	assign {cout,out[7:0]} = in_a+in_b+cin;
