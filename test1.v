@@ -48,11 +48,12 @@ module test_1(
 	assign out_clk = clk;						/*cpuIR    考虑是否需要取反*/
 	assign w_uPC = 1'b0;
 	// 寄存器状态控制器
-	assign reg_ch_w = reg_ch_l_w & reg_ch_h_w ; /*写线汇总*/
-	assign reg_ch_r = reg_ch_l_r & reg_ch_h_r;  /*读线汇总*/
+	assign reg_ch_w = reg_ch_l_w | reg_ch_h_w ; /*写线汇总*/
+	assign reg_ch_r = reg_ch_l_r | reg_ch_h_r;  /*读线汇总*/
 	// 临时输出显示
 	assign led[7:0] = dbus;
-	
+	assign led[15:8] = reg_ch_w;
+	assign led[23:16] = reg_ch_r;
 
 	/*寄存器的选取*/
 	decode decode_l_r(			/*低位指定的读寄存器*/
@@ -85,7 +86,7 @@ module test_1(
 		.ld		(in_rom[2]),
 		.op		(in_rom[1:0]),
 		.in_upc	(in_rom[20:13]),
-		.in_pc	(4'b0),
+		.in_pc	(4'b0000),
 		.out	(addr_rom)
 	);
 
@@ -97,7 +98,7 @@ module test_1(
 		.clk		(clk),
 		.in			(dbus),
 		.out		(addtoalu),
-		.out_allow	(reg_ch_r[4]),
+		.out_allow	(1'b1),
 		.in_allow	(reg_ch_w[4]),
 		.rst		(rst)
 	);
@@ -174,7 +175,7 @@ module w_uPC(input clk,input rst,input ld,input [1:0] op,
 		reg [7:0] value;
 		always @(posedge clk) begin
 			if (!rst)
-				assign value = 8'b00000000;	
+				value <= 8'b00000000;	
 			else begin
 				case({ld,op[1:0]})
 					3'b100: value <= value + 1;
@@ -232,13 +233,13 @@ module w_alu (
 
 		always @(*) begin
 			case(op)
-				3'b000:	assign {cout,out[7:0]} = in_a+in_b+cin;
-				3'b001: assign {cout,out[7:0]} = in_a-in_b-cin;//逻辑有点混乱
-				3'b010: assign out[7:0] = in_a*in_b;
-				3'b011: assign out[7:0] = ~in_b;
-				3'b100: assign out[7:0] = in_a^in_b;
-				3'b101: assign out[7:0] = in_b+1;
-				3'b111: assign out[7:0] = 8'bzzzzzzzz;
+				3'b000:	 {cout,out[7:0]} <= in_a+in_b+cin;
+				3'b001:  {cout,out[7:0]} <= in_a-in_b-cin;//逻辑有点混乱
+				3'b010:  out[7:0] <= in_a*in_b;
+				3'b011:  out[7:0] <= ~in_b;
+				3'b100:  out[7:0] <= in_a^in_b;
+				3'b101:  out[7:0] <= in_b+1;
+				3'b111:  out[7:0] <= 8'bzzzzzzzz;
 			endcase	
 		end
 endmodule
