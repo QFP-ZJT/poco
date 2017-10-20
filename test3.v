@@ -41,7 +41,8 @@ module test_1(
     /*累加寄存器 定义输出连线*/
 	wire [7:0] addtoalu;	/*累加器连接ALU*/
 	wire [7:0] toans;		/*连接到结果寄存器*/
-	
+	wire [7:0] irtoupc;		/*IR to UPC*/
+
 	//设置时钟是否处于输入状态
 	assign clk = run ? in_clk : 1'bz;				/*若run为true 则接入时钟，否则断开时钟*/
 	// ROM 设置
@@ -74,7 +75,7 @@ module test_1(
     );
 
     /**
-     *
+     *	ram 地址生成线
      */
      addrforram addrforram(
         .addr_frommar   (addr_frommar),
@@ -91,7 +92,7 @@ module test_1(
 		.ld		(in_rom_e[2]),
 		.op		(in_rom_e[1:0]),
 		.in_upc	(in_rom_e[20:13]),
-		.in_pc	(4'b0000),
+		.in_pc	(irtoupc),//TODO
 		.out	(addr_rom)
 	);
 
@@ -136,7 +137,7 @@ module test_1(
 		.out_allow	(reg_ch_r[2]),		
 		.in_allow	(reg_ch_w[2]),
 		.rst		(rst),
-        .toram      (addr_frommar)
+        .out_direct      (addr_frommar)
     );
 
     registerforoutput reg_pc(         //PC寄存器
@@ -146,7 +147,17 @@ module test_1(
 		.out_allow	(reg_ch_r[0]),		
 		.in_allow	(reg_ch_w[0]),
 		.rst		(rst),
-        .toram      (addr_frompc)
+        .out_direct      (addr_frompc)
+    );
+
+	registerforoutput reg_ir(         //IR寄存器
+        .clk		(clk),
+		.in			(dbus),
+		.out		(dbus),
+		.out_allow	(reg_ch_r[1]),		
+		.in_allow	(reg_ch_w[1]),
+		.rst		(rst),
+        .out_direct      (irtoupc)
     );
 
 	register reg_r0(				//通用寄存器R0
@@ -184,9 +195,9 @@ endmodule
 
 
 
-// 微程序设计指令的地址生成器   乘法生成器
+// 微程序设计指令的地址生成器   
 module w_uPC(input clk,input rst,input ld,input [1:0] op,
-			input [7:0] in_upc,input [3:0] in_pc,output wire [7:0] out);
+			input [7:0] in_upc,input [7:0] in_pc,output wire [7:0] out);
 		/**
 		*	rst = 0 清零
 		*	rst = 1, ld = 0; 直传 out = in
@@ -195,7 +206,11 @@ module w_uPC(input clk,input rst,input ld,input [1:0] op,
 		*	rst = 1, ld = 1,op[1:0] == 00; 计数
 		*	可能的更改:reg直接输出
 		*/
-		
+		wire [7:0] pctoupc;
+		decode_7 decode(
+			.in(in_pc),
+			.out(pctoupc)
+		);
 		reg [7:0] value;
 		always @(posedge clk) begin
 			if (!rst)
@@ -203,7 +218,7 @@ module w_uPC(input clk,input rst,input ld,input [1:0] op,
 			else begin
 				case({ld,op[1:0]})
 					3'b100: value <= value + 1;
-					3'b001: value <= 8'b0;//等待pc转换
+					3'b001: value <= pctoupc;//等待pc转换
 					3'b010: value <= in_upc;
 				endcase
 			end
@@ -269,11 +284,11 @@ module registerformdr(
 endmodule
 
 /**
- *  for MAR 专用寄存器
+ *  for MAR IR PC 专用寄存器
  */
 module registerforoutput(
 	input clk, input [7:0] in, output wire [7:0] out,
-	input out_allow,input in_allow,input rst, output wire [7:0] toram);
+	input out_allow,input in_allow,input rst, output wire [7:0] out_direct);
 
 		/** 
 		*	rst = 0   清零
@@ -287,7 +302,7 @@ module registerforoutput(
 			else if (in_allow)
 				mem <= in;
 		end
-        assign toram = mem;
+        assign out_direct = mem;
 		assign out = out_allow ? mem : 8'bzzzzzzzz;
 endmodule
 
@@ -447,4 +462,55 @@ module decode(
 			endcase
 		else
 			out <= 8'b00000000;
+endmodule
+
+/**
+ *
+ */
+module decode_7(
+	input [7:0] in,
+	output reg [7:0] out);
+	always @(*)
+		case(in)
+		8'b00000000: out <= 8'b01101011;	// 0 TO 107 	ALU_异或_R0
+		8'b00000001: out <= 8'b01010000;	// 1 TO 80 	LOAD_NUM_MAR
+		8'b00000010: out <= 8'b01101010;	// 2 TO 106 	ALU_反_R0
+		8'b00000011: out <= 8'b00101000;	// 3 TO 40 	STORE_MAR_MAR
+		8'b00000100: out <= 8'b01011011;	// 4 TO 91 	R1--PC
+		8'b00000101: out <= 8'b01011001;	// 5 TO 89 	R1--LJ
+		8'b00000110: out <= 8'b01011111;	// 6 TO 95 	LJ--PC
+		8'b00000111: out <= 8'b01001000;	// 7 TO 72 	LOAD_NUM_R1
+		8'b00001000: out <= 8'b01000100;	// 8 TO 68 	LOAD_NUM_R0
+		8'b00001001: out <= 8'b00100100;	// 9 TO 36 	STORE_R0_MAR
+		8'b00001010: out <= 8'b01011100;	// 10 TO 92 	LJ--MAR
+		8'b00001011: out <= 8'b01101001;	// 11 TO 105 	ALU_乘_R0
+		8'b00001100: out <= 8'b00011000;	// 12 TO 24 	LOAD_PC_LJ
+		8'b00001101: out <= 8'b00001000;	// 13 TO 8 	LOAD_MAR_LJ
+		8'b00001110: out <= 8'b00110010;	// 14 TO 50 	STORE_R1_PC
+		8'b00001111: out <= 8'b01010111;	// 15 TO 87 	R0--PC
+		8'b00010000: out <= 8'b01010101;	// 16 TO 85 	R0--LJ
+		8'b00010001: out <= 8'b01010100;	// 17 TO 84 	RO--MAR
+		8'b00010010: out <= 8'b01101000;	// 18 TO 104 	ALU_减_R0
+		8'b00010011: out <= 8'b01101100;	// 19 TO 108 	ALU_自增_R0
+		8'b00010100: out <= 8'b00000000;	// 20 TO 0 	GETPC
+		8'b00010101: out <= 8'b00011110;	// 21 TO 30 	LOAD_PC_MAR
+		8'b00010110: out <= 8'b01011110;	// 22 TO 94 	LJ--R0
+		8'b00010111: out <= 8'b01011101;	// 23 TO 93 	LJ--R1
+		8'b00011000: out <= 8'b01010110;	// 24 TO 86 	RO--R1
+		8'b00011001: out <= 8'b01011010;	// 25 TO 90 	R1--R0
+		8'b00011010: out <= 8'b00001010;	// 26 TO 10 	LOAD_MAR_MAR
+		8'b00011011: out <= 8'b00101010;	// 27 TO 42 	STORE_ANS_MAR
+		8'b00011100: out <= 8'b00111000;	// 28 TO 56 	STORE_MAR_PC
+		8'b00011101: out <= 8'b01001100;	// 29 TO 76 	LOAD_NUM_LJ
+		8'b00011110: out <= 8'b01100111;	// 30 TO 103 	ALU_加_R0
+		8'b00011111: out <= 8'b00010010;	// 31 TO 18 	LOAD_PC_R1
+		8'b00100000: out <= 8'b00001100;	// 32 TO 12 	LOAD_PC_R0
+		8'b00100001: out <= 8'b01011000;	// 33 TO 88 	R1--MAR
+		8'b00100010: out <= 8'b00101100;	// 34 TO 44 	STORE_R0_PC
+		8'b00100011: out <= 8'b00000100;	// 35 TO 4 	LOAD_MAR_R0
+		8'b00100100: out <= 8'b00000110;	// 36 TO 6 	LOAD_MAR_R1
+		8'b00100101: out <= 8'b00100110;	// 37 TO 38 	STORE_R1_MAR
+		8'b00100110: out <= 8'b00111110;	// 38 TO 62 	STORE_ANS_PC
+		8'b00100111: out <= 8'b01101101;	// 39 TO 109 	ALU_除法_R0
+		endcase
 endmodule
