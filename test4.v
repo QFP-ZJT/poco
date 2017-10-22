@@ -70,6 +70,7 @@ module test_1(
 	    .reg_ch_h   (in_rom_e[20:18]), 	    /*高位指定的寄存器选择线*/
 	    .l_wr       (in_rom_e[12:11]),	    /*低位指定的寄存器 写读控制器*/
         .h_wr       (in_rom_e[17:16]),      /*高位指定的寄存器 写读控制器*/
+		.next		(in_rom_e[2:0]),		/*计数	PC转换	停机*/
 	    .reg_ch_w   (reg_ch_w),             /*写寄存器选择线*/
 	    .reg_ch_r	(reg_ch_r)              /*读寄存器选择线*/
     );
@@ -92,7 +93,8 @@ module test_1(
 		.ld		(in_rom_e[2]),
 		.op		(in_rom_e[1:0]),
 		.in_upc	(in_rom_e[20:13]),
-		.in_pc	(irtoupc),//TODO
+		.in_pc	(irtoupc),
+		.reg_sta(reg_sta),
 		.out	(addr_rom)
 	);
 
@@ -196,7 +198,8 @@ endmodule
 
 
 // 微程序设计指令的地址生成器   
-module w_uPC(input clk,input rst,input ld,input [1:0] op,
+module w_uPC(input clk,input rst,input ld,input [1:0] op,//下地址生成方式
+			input [7:0] reg_sta, 						//状态寄存器
 			input [7:0] in_upc,input [7:0] in_pc,output wire [7:0] out);
 		/**
 		*	rst = 0 清零
@@ -219,7 +222,13 @@ module w_uPC(input clk,input rst,input ld,input [1:0] op,
 				case({ld,op[1:0]})	
 					3'b100: value <= value + 1;
 					3'b001: value <= pctoupc;//等待pc转换
-					3'b010: value <= in_upc;
+					3'b010: value <= in_upc; //跳转到指定位置
+					3'b011: begin
+								if(reg_sta[3]==1)//两个数字相等  继续向下运行
+									value <= 8'b0;
+								else
+									value <= 8'b0000_0100;		//不相等跳转到MAR指定的位置上
+							end
 				endcase
 			end
 		end
@@ -349,17 +358,38 @@ module w_alu (
         reg cout_add;reg cout_sub;
         wire equal;/*判断输出是否为全0*/
         assign equal = out[0] | out[1] | out[2] | out[3] | out[4] | out[5] | out[6] | out[7];
-       decode decode(			/*低位指定的读寄存器*/
-		.in 	(controllerforstate),
-		.open	(1'b1),
-		.out 	(in_allow));
-
+			   /** 状态位含义
+				* 0:	进位标志符 
+				* 1:	借位标志符
+				* 2:	结果为0 为1
+				* 3:   补码运算正溢出
+				* 4:   补码运算负溢出
+				*/
 		always @(*) begin
             if (!rst)
 				mem <= 8'b0;
-			case(op)
-				3'b000:	 {cout_add,out[7:0]} <= in_a+in_b+mem[0];
-				3'b001:  {cout_sub,out[7:0]} <= in_a-in_b-mem[1];//逻辑有点混乱
+			case(op)//使用双符号位的补码进行运算
+				3'b000:	begin       //加法
+				 	case(controllerforstate)
+					3'd3:begin
+						{cout_add,out[7:0]} <= {in_a[7],in_a}+{in_b[7],in_b};
+						if({cout_add,out[7]} == 2'b01) // 正溢
+							reg_sta[3] <= 1'b1;
+						if({cout_add,out[7]} == 2'b10) //负溢
+							reg_sta[4] <= 1'b1;
+						end
+					3'd0:{reg_sta[0],out[7:0]} <= {in_a}+{in_b};//记录进位
+					3'd1:out[7:0] <= {in_a}+{in_b}＋{7'b0000000,reg_sta[0]};//使用进位
+					3'd2:{reg_sta[0],out[7:0]} <= {in_a}+{in_b}+{7'b0000000,reg_sta[0]};//记录并使用进位
+					endcase
+					end
+				3'b001:  begin       //减法
+						{cout_sub,out[7:0]} <= {in_a[7],in_a)+{~in_b[7],~in_b}+9'd1;
+						if({cout_add,out[7]} == 2'b01) // 正溢
+							reg_sta[3] <= 1'b1;
+						if({cout_add,out[7]} == 2'b10) //负溢
+							reg_sta[4] <= 1'b1;
+					end
 				3'b010:  out[7:0] <= in_a*in_b;
 				3'b011:  out[7:0] <= ~in_b;
 				3'b100:  out[7:0] <= in_a^in_b;
@@ -367,21 +397,7 @@ module w_alu (
                 3'b110:  out[7:0] <= in_b & in_a;
 				3'b111:  out[7:0] <= 8'bzzzzzzzz;
 			endcase	
-            if (in_allow[0])
-                mem[0] <= cout_add;
-            if (in_allow[1])
-                mem[1] <= cout_sub;
-            if (in_allow[2])
-                mem[2] <= ~equal;
-            // if (in_allow[3])
-            //     mem[3] <= in[3];
-            // if (in_allow[4])
-            //     mem[4] <= in[4];
-            // if (in_allow[5])
-            //     mem[5] <= in[5];
-            // if (in_allow[6])
-            //     mem[6] <= in[6];
-        //   牺牲7号寄存器
+			mem[2] <= ~equal;
 		end
 endmodule
 
@@ -407,6 +423,7 @@ module wrcontroller(
 	input [2:0] reg_ch_h, 	    /*高位指定的寄存器选择线*/
 	input [1:0] l_wr,	        /*低位指定的寄存器 写读控制器*/
     input [1:0] h_wr,           /*高位指定的寄存器 写读控制器*/
+	input [2:0] next,		    /*根据下地址生成方式决定是否有效*/
 	output wire [7:0] reg_ch_w, /*写寄存器选择线*/
 	output wire [7:0] reg_ch_r	/*读寄存器选择线*/);
 
@@ -436,8 +453,9 @@ module wrcontroller(
 		.out 	(reg_ch_h_w)
 	);
     // 寄存器状态控制器
-	assign reg_ch_w = reg_ch_l_w | reg_ch_h_w ; /*写线汇总*/
-	assign reg_ch_r = reg_ch_l_r | reg_ch_h_r;  /*读线汇总*/
+	//                           计数        通过PC转换        停机
+	assign reg_ch_w = (next == 3'b100 || next == 3'b001 || 3'b111) ? (reg_ch_l_w | reg_ch_h_w) : 8'b0; /*写线汇总*/
+	assign reg_ch_r = (next == 3'b100 || next == 3'b001 || 3'b111) ? (reg_ch_l_r | reg_ch_h_r) : 8'b0;  /*读线汇总*/
 
 endmodule
 
