@@ -1,0 +1,236 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 87.448 ns
+From           : in_rom[11]
+To             : w_alu:alu|mem[2]
+From Clock     : --
+To Clock       : in_rom_efficient
+Failed Paths   : 0
+
+Type           : Worst-case tco
+Slack          : N/A
+Required Time  : None
+Actual Time    : 95.181 ns
+From           : w_alu:alu|mem[4]
+To             : led[4]
+From Clock     : in_rom[11]
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case tpd
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.251 ns
+From           : in_rom[5]
+To             : addr_ram[3]
+From Clock     : --
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 85.998 ns
+From           : in_rom_efficient
+To             : w_alu:alu|mem[3]
+From Clock     : --
+To Clock       : in_rom[11]
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_clk'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 6.41 MHz ( period = 156.062 ns )
+From           : registerforoutput:reg_mar|mem[2]
+To             : w_alu:alu|mem[4]
+From Clock     : in_clk
+To Clock       : in_clk
+Failed Paths   : 0
+
+Type           : Clock Setup: 'run'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 6.41 MHz ( period = 156.062 ns )
+From           : registerforoutput:reg_mar|mem[2]
+To             : w_alu:alu|mem[4]
+From Clock     : run
+To Clock       : run
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom[22]'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.48 MHz ( period = 69.054 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[2]
+From Clock     : in_rom[22]
+To Clock       : in_rom[22]
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom_efficient'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.49 MHz ( period = 69.013 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[2]
+From Clock     : in_rom_efficient
+To Clock       : in_rom_efficient
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom[21]'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.54 MHz ( period = 68.757 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[2]
+From Clock     : in_rom[21]
+To Clock       : in_rom[21]
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom[23]'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.57 MHz ( period = 68.617 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[2]
+From Clock     : in_rom[23]
+To Clock       : in_rom[23]
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom[6]'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 14.88 MHz ( period = 67.189 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[4]
+From Clock     : in_rom[6]
+To Clock       : in_rom[6]
+Failed Paths   : 0
+
+Type           : Clock Setup: 'rst'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 15.78 MHz ( period = 63.371 ns )
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[2]
+From Clock     : rst
+To Clock       : rst
+Failed Paths   : 0
+
+Type           : Clock Setup: 'in_rom[7]'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 389.11 MHz ( period = 2.570 ns )
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[4]
+From Clock     : in_rom[7]
+To Clock       : in_rom[7]
+Failed Paths   : 0
+
+Type           : Clock Hold: 'in_rom_efficient'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom_efficient
+To Clock       : in_rom_efficient
+Failed Paths   : 4
+
+Type           : Clock Hold: 'run'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : register:reg_add|mem[7]
+To             : w_alu:alu|mem[3]
+From Clock     : run
+To Clock       : run
+Failed Paths   : 201
+
+Type           : Clock Hold: 'in_clk'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : register:reg_add|mem[7]
+To             : w_alu:alu|mem[3]
+From Clock     : in_clk
+To Clock       : in_clk
+Failed Paths   : 201
+
+Type           : Clock Hold: 'in_rom[21]'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom[21]
+To Clock       : in_rom[21]
+Failed Paths   : 4
+
+Type           : Clock Hold: 'in_rom[6]'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom[6]
+To Clock       : in_rom[6]
+Failed Paths   : 4
+
+Type           : Clock Hold: 'in_rom[22]'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom[22]
+To Clock       : in_rom[22]
+Failed Paths   : 4
+
+Type           : Clock Hold: 'in_rom[23]'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom[23]
+To Clock       : in_rom[23]
+Failed Paths   : 4
+
+Type           : Clock Hold: 'in_rom[7]'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|cout_add
+To             : w_alu:alu|mem[3]
+From Clock     : in_rom[7]
+To Clock       : in_rom[7]
+Failed Paths   : 2
+
+Type           : Clock Hold: 'rst'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : w_alu:alu|mem[0]
+To             : w_alu:alu|mem[3]
+From Clock     : rst
+To Clock       : rst
+Failed Paths   : 2
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 426
+
+--------------------------------------------------------------------------------------
+

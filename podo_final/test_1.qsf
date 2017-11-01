@@ -1,0 +1,152 @@
+# Copyright (C) 1991-2008 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+
+
+# The default values for assignments are stored in the file
+#		test_1_assignment_defaults.qdf
+# If this file doesn't exist, and for assignments not listed, see file
+#		assignment_defaults.qdf
+
+# Altera recommends that you do not modify this file. This
+# file is updated automatically by the Quartus II software
+# and any changes you make may be lost or overwritten.
+
+
+set_global_assignment -name FAMILY "Cyclone II"
+set_global_assignment -name DEVICE EP2C8Q208C7
+set_global_assignment -name TOP_LEVEL_ENTITY test_1
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 8.1
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "08:10:10  SEPTEMBER 28, 2017"
+set_global_assignment -name LAST_QUARTUS_VERSION 8.1
+set_global_assignment -name USE_GENERATED_PHYSICAL_CONSTRAINTS OFF -section_id eda_blast_fpga
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name VERILOG_FILE test_1.v
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
+set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_191 -to addr_rom[7]
+set_location_assignment PIN_189 -to addr_rom[6]
+set_location_assignment PIN_188 -to addr_rom[5]
+set_location_assignment PIN_187 -to addr_rom[4]
+set_location_assignment PIN_185 -to addr_rom[3]
+set_location_assignment PIN_182 -to addr_rom[2]
+set_location_assignment PIN_181 -to addr_rom[1]
+set_location_assignment PIN_180 -to addr_rom[0]
+set_location_assignment PIN_131 -to in_clk
+set_location_assignment PIN_127 -to in_rom[23]
+set_location_assignment PIN_118 -to in_rom[22]
+set_location_assignment PIN_117 -to in_rom[21]
+set_location_assignment PIN_116 -to in_rom[20]
+set_location_assignment PIN_115 -to in_rom[19]
+set_location_assignment PIN_114 -to in_rom[18]
+set_location_assignment PIN_113 -to in_rom[17]
+set_location_assignment PIN_112 -to in_rom[16]
+set_location_assignment PIN_110 -to in_rom[15]
+set_location_assignment PIN_108 -to in_rom[14]
+set_location_assignment PIN_106 -to in_rom[13]
+set_location_assignment PIN_105 -to in_rom[12]
+set_location_assignment PIN_104 -to in_rom[11]
+set_location_assignment PIN_103 -to in_rom[10]
+set_location_assignment PIN_102 -to in_rom[9]
+set_location_assignment PIN_101 -to in_rom[8]
+set_location_assignment PIN_99 -to in_rom[7]
+set_location_assignment PIN_97 -to in_rom[6]
+set_location_assignment PIN_96 -to in_rom[5]
+set_location_assignment PIN_95 -to in_rom[4]
+set_location_assignment PIN_94 -to in_rom[3]
+set_location_assignment PIN_92 -to in_rom[2]
+set_location_assignment PIN_90 -to in_rom[1]
+set_location_assignment PIN_89 -to in_rom[0]
+set_location_assignment PIN_33 -to led[23]
+set_location_assignment PIN_31 -to led[22]
+set_location_assignment PIN_30 -to led[21]
+set_location_assignment PIN_15 -to led[20]
+set_location_assignment PIN_14 -to led[19]
+set_location_assignment PIN_13 -to led[18]
+set_location_assignment PIN_12 -to led[17]
+set_location_assignment PIN_11 -to led[16]
+set_location_assignment PIN_141 -to led[15]
+set_location_assignment PIN_139 -to led[14]
+set_location_assignment PIN_138 -to led[13]
+set_location_assignment PIN_137 -to led[12]
+set_location_assignment PIN_135 -to led[11]
+set_location_assignment PIN_134 -to led[10]
+set_location_assignment PIN_133 -to led[9]
+set_location_assignment PIN_128 -to led[8]
+set_location_assignment PIN_44 -to led[7]
+set_location_assignment PIN_43 -to led[6]
+set_location_assignment PIN_41 -to led[5]
+set_location_assignment PIN_40 -to led[4]
+set_location_assignment PIN_39 -to led[3]
+set_location_assignment PIN_37 -to led[2]
+set_location_assignment PIN_35 -to led[1]
+set_location_assignment PIN_34 -to led[0]
+set_location_assignment PIN_61 -to out_clk
+set_location_assignment PIN_206 -to rst
+set_location_assignment PIN_107 -to run
+set_location_assignment PIN_60 -to wupc
+set_global_assignment -name MISC_FILE "F:/podo/test_1.dpf"
+set_global_assignment -name USE_CONFIGURATION_DEVICE ON
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name RESERVE_ASDO_AFTER_CONFIGURATION "AS INPUT TRI-STATED"
+set_location_assignment PIN_165 -to led[31]
+set_location_assignment PIN_164 -to led[30]
+set_location_assignment PIN_163 -to led[29]
+set_location_assignment PIN_162 -to led[28]
+set_location_assignment PIN_161 -to led[27]
+set_location_assignment PIN_160 -to led[26]
+set_location_assignment PIN_152 -to led[25]
+set_location_assignment PIN_151 -to led[24]
+set_location_assignment PIN_179 -to addr_ram[7]
+set_location_assignment PIN_176 -to addr_ram[6]
+set_location_assignment PIN_175 -to addr_ram[5]
+set_location_assignment PIN_173 -to addr_ram[4]
+set_location_assignment PIN_171 -to addr_ram[3]
+set_location_assignment PIN_170 -to addr_ram[2]
+set_location_assignment PIN_169 -to addr_ram[1]
+set_location_assignment PIN_168 -to addr_ram[0]
+set_location_assignment PIN_201 -to dataram[7]
+set_location_assignment PIN_200 -to dataram[6]
+set_location_assignment PIN_199 -to dataram[5]
+set_location_assignment PIN_198 -to dataram[4]
+set_location_assignment PIN_197 -to dataram[3]
+set_location_assignment PIN_195 -to dataram[2]
+set_location_assignment PIN_193 -to dataram[1]
+set_location_assignment PIN_192 -to dataram[0]
+set_location_assignment PIN_63 -to rram
+set_location_assignment PIN_64 -to wram
+set_location_assignment PIN_130 -to in_rom_efficient
+set_location_assignment PIN_76 -to keyboard[7]
+set_location_assignment PIN_75 -to keyboard[6]
+set_location_assignment PIN_74 -to keyboard[5]
+set_location_assignment PIN_72 -to keyboard[4]
+set_location_assignment PIN_70 -to keyboard[3]
+set_location_assignment PIN_69 -to keyboard[2]
+set_location_assignment PIN_68 -to keyboard[1]
+set_location_assignment PIN_67 -to keyboard[0]
+set_global_assignment -name MISC_FILE "C:/Users/dell/Desktop/podo/test_1.dpf"
+set_location_assignment PIN_129 -to interrupt
+set_location_assignment PIN_150 -to led[39]
+set_location_assignment PIN_149 -to led[38]
+set_location_assignment PIN_147 -to led[37]
+set_location_assignment PIN_146 -to led[36]
+set_location_assignment PIN_145 -to led[35]
+set_location_assignment PIN_144 -to led[34]
+set_location_assignment PIN_143 -to led[33]
+set_location_assignment PIN_142 -to led[32]
+set_global_assignment -name MISC_FILE "C:/Users/dell/Desktop/zjtao/podo/test_1.dpf"
