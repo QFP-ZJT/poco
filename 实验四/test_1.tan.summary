@@ -1,0 +1,116 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 16.914 ns
+From           : dataforram[7]
+To             : alu:alu|out[0]$latch
+From Clock     : --
+To Clock       : choose
+Failed Paths   : 0
+
+Type           : Worst-case tco
+Slack          : N/A
+Required Time  : None
+Actual Time    : 22.684 ns
+From           : alu:alu|out[1]_145
+To             : dataforram[7]
+From Clock     : clk_sin
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case tpd
+Slack          : N/A
+Required Time  : None
+Actual Time    : 13.804 ns
+From           : dataforram[5]
+To             : led[37]
+From Clock     : --
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 5.892 ns
+From           : dataforram[0]
+To             : alu:alu|out[0]$latch
+From Clock     : --
+To Clock       : clk_sin
+Failed Paths   : 0
+
+Type           : Clock Setup: 'clk_sin'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 43.62 MHz ( period = 22.923 ns )
+From           : cu:cu|op[8]
+To             : alu:alu|out[0]$latch
+From Clock     : clk_sin
+To Clock       : clk_sin
+Failed Paths   : 0
+
+Type           : Clock Setup: 'clk_con'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 43.62 MHz ( period = 22.923 ns )
+From           : cu:cu|op[8]
+To             : alu:alu|out[0]$latch
+From Clock     : clk_con
+To Clock       : clk_con
+Failed Paths   : 0
+
+Type           : Clock Setup: 'choose'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 43.62 MHz ( period = 22.923 ns )
+From           : cu:cu|op[8]
+To             : alu:alu|out[0]$latch
+From Clock     : choose
+To Clock       : choose
+Failed Paths   : 0
+
+Type           : Clock Hold: 'choose'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : composer:composer|count_t[2]
+To             : cu:cu|op[1]
+From Clock     : choose
+To Clock       : choose
+Failed Paths   : 360
+
+Type           : Clock Hold: 'clk_con'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : composer:composer|count_t[2]
+To             : cu:cu|op[1]
+From Clock     : clk_con
+To Clock       : clk_con
+Failed Paths   : 360
+
+Type           : Clock Hold: 'clk_sin'
+Slack          : Not operational: Clock Skew > Data Delay
+Required Time  : None
+Actual Time    : N/A
+From           : composer:composer|count_t[2]
+To             : cu:cu|op[1]
+From Clock     : clk_sin
+To Clock       : clk_sin
+Failed Paths   : 360
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 1080
+
+--------------------------------------------------------------------------------------
+
